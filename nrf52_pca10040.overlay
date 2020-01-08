@@ -22,5 +22,8 @@
         display-offset  = <0x00>;
         multiplex-ratio = <0x1F>;
         prechargep      = <0xF1>;
+        segment-remap;
+        com-invdir;
+        com-sequential;
     };
 };
