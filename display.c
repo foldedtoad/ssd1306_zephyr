@@ -8,6 +8,9 @@
 #include <display/cfb.h>
 #include <stdio.h>
 
+#include <logging/log.h>
+LOG_MODULE_REGISTER(display, 3);
+
 #define DISPLAY_DRIVER      DT_INST_0_SOLOMON_SSD1306FB_LABEL
 
 static struct device *dev;
@@ -68,19 +71,19 @@ void display_init(void)
     dev = device_get_binding(DISPLAY_DRIVER);
 
     if (dev == NULL) {
-        printk("Device not found\n");
+        LOG_ERR("Device not found");
         return;
     }
 
     if (display_set_pixel_format(dev, PIXEL_FORMAT_MONO10) != 0) {
-        printk("Failed to set required pixel format\n");
+        LOG_ERR("Failed to set required pixel format");
         return;
     }
 
-    printk("initialized %s\n", DISPLAY_DRIVER);
+    LOG_INF("Binding to %s", DISPLAY_DRIVER);
 
     if (cfb_framebuffer_init(dev)) {
-        printk("Framebuffer initialization failed!\n");
+        LOG_ERR("Framebuffer initialization failed!");
         return;
     }
 
@@ -97,20 +100,20 @@ void display_init(void)
 
         cfb_get_font_size(dev, idx, &font_width, &font_height);
 
-        printk("index[%d] font width %d, font height %d\n",
-            idx, font_width, font_height);
+        LOG_INF("Index[%d] font dimensions %2dx%d",
+                idx, font_width, font_height);
     }
 
     cfb_framebuffer_set_font(dev, SELECTED_FONT_INDEX);
 
-    printk("selected font: index[%d]\n", SELECTED_FONT_INDEX);
+    LOG_INF("Selected font: index[%d]", SELECTED_FONT_INDEX);
 
     cfb_framebuffer_invert(dev);  // white on black
 
-    printk("x_res %d, y_res %d, ppt %d, rows %d, cols %d\n",
-           cfb_get_display_parameter(dev, CFB_DISPLAY_WIDTH),
-           cfb_get_display_parameter(dev, CFB_DISPLAY_HEIGH),
-           ppt,
-           rows,
-           cfb_get_display_parameter(dev, CFB_DISPLAY_COLS));
+    LOG_INF("x_res %d, y_res %d, ppt %d, rows %d, cols %d",
+            cfb_get_display_parameter(dev, CFB_DISPLAY_WIDTH),
+            cfb_get_display_parameter(dev, CFB_DISPLAY_HEIGH),
+            ppt,
+            rows,
+            cfb_get_display_parameter(dev, CFB_DISPLAY_COLS));
 }
