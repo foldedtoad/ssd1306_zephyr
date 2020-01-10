@@ -26,40 +26,43 @@ static u8_t font_height;
 /*---------------------------------------------------------------------------*/
 void display_play(void)
 {
+    u8_t x_offset = 0;
+    u8_t y_offset;
+
     while (1) {
 
-        for (int i = 0; i < rows; i++) {
+        for (int i=0; i < rows; i++) {
 
-#if 1
+            y_offset = i * ppt;
+
             switch (i) {
                 case 0:
-                    cfb_print(dev, " average", 0, i * ppt);
+                    cfb_print(dev, " average", x_offset, y_offset);
                     break;
                 case 1:
-                    cfb_print(dev, " good", 0, i * ppt);
+                    cfb_print(dev, " good",    x_offset, y_offset);
                     break;
                 case 2:
-                    cfb_print(dev, " better", 0, i * ppt);
+                    cfb_print(dev, " better",  x_offset, y_offset);
                     break;
                 case 3:
-                    cfb_print(dev, " best", 0, i * ppt);
+                    cfb_print(dev, " best",    x_offset, y_offset);
                     break;
                 default:
                     break;
             }
-#else
-            if (cfb_print(dev, "0123456789mMgj!\"§$%&/()=", 0, i * ppt)) {
-                printk("Failed to print a string\n");
-                continue;
-            }
-#endif
+
             cfb_framebuffer_finalize(dev);
 
-            k_sleep(K_MSEC(1000));
+            k_sleep(K_MSEC(300));
         }
 
         cfb_framebuffer_clear(dev, false);
 
+        if (x_offset > 50)
+            x_offset = 0;
+        else
+            x_offset += 5;
     }
 }
 
