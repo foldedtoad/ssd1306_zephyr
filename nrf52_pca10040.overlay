@@ -21,7 +21,7 @@
         page-offset     = <0>;
         display-offset  = <0>;
         multiplex-ratio = <31>;
-        prechargep      = <0xF1>;
+        prechargep      = <0xD1>;
         segment-remap;
         com-invdir;
         com-sequential;
